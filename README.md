@@ -66,8 +66,6 @@ streamlit run app.py
 - Choose between Dijkstra and A* for pathfinding
 - Displays shortest path and total cost
 
-![Screenshot](screenshot.png) <!-- Optional: Add a screenshot -->
-
 ---
 
 ## 🧪 Testing
