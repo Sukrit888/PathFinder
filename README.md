@@ -122,7 +122,7 @@ pathfinder/
 
 **Sukrit Kashyap Goswami**  
 🧠 Product + Tech Enthusiast  
-📬 [LinkedIn](https://linkedin.com/in/sukritgoswami) | [Medium](https://medium.com/@yourusername)
+📬 [LinkedIn](https://www.linkedin.com/in/sukritkashyapgoswami/) | [Medium](medium.com/@6sukritgoswami)
 
 ---
 
