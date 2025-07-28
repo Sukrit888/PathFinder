@@ -1,97 +1,44 @@
-import heapq
-
 class Graph:
     def __init__(self):
-        self.edges = {}
-        self.heuristics = {}
+        self.adjacency = {}
 
-    def add_node(self, value):
-        if value not in self.edges:
-            self.edges[value] = {}
+    def add_node(self, node):
+        if node not in self.adjacency:
+            self.adjacency[node] = []
 
-    def add_edge(self, from_node, to_node, weight):
-        self.add_node(from_node)
-        self.add_node(to_node)
-        self.edges[from_node][to_node] = weight
-        self.edges[to_node][from_node] = weight  # Undirected
-
-    def set_heuristic(self, node, h_value):
-        self.heuristics[node] = h_value
+    def add_edge(self, node1, node2, weight=1):
+        self.add_node(node1)
+        self.add_node(node2)
+        self.adjacency[node1].append((node2, weight))
+        self.adjacency[node2].append((node1, weight))  # For undirected graph
 
     def get_nodes(self):
-        return list(self.edges.keys())
+        return list(self.adjacency.keys())
 
-    def bfs(self, start, goal):
-        visited = set()
-        queue = [(start, [start])]
+    def get_edges(self):
+        edge_set = set()
+        for node in self.adjacency:
+            for neighbor, weight in self.adjacency[node]:
+                edge = tuple(sorted((node, neighbor)))
+                edge_set.add((edge[0], edge[1], weight))
+        return list(edge_set)
 
-        while queue:
-            current, path = queue.pop(0)
-            if current == goal:
-                return path, len(path) - 1
-
-            visited.add(current)
-
-            for neighbor in self.edges[current]:
-                if neighbor not in visited:
-                    queue.append((neighbor, path + [neighbor]))
-                    visited.add(neighbor)
-        return None, float("inf")
-
-    def dfs(self, start, goal):
-        visited = set()
-        stack = [(start, [start])]
-
-        while stack:
-            current, path = stack.pop()
-            if current == goal:
-                return path, len(path) - 1
-
-            if current not in visited:
-                visited.add(current)
-                for neighbor in self.edges[current]:
-                    stack.append((neighbor, path + [neighbor]))
-
-        return None, float("inf")
-
-    def dijkstra(self, start, goal):
+    def dijkstra(self, start, end):
+        import heapq
         queue = [(0, start, [])]
-        visited = set()
+        seen = set()
 
         while queue:
-            (cost, current, path) = heapq.heappop(queue)
-            if current in visited:
+            (cost, node, path) = heapq.heappop(queue)
+            if node in seen:
                 continue
-            visited.add(current)
-            path = path + [current]
+            seen.add(node)
+            path = path + [node]
 
-            if current == goal:
+            if node == end:
                 return path, cost
 
-            for neighbor, weight in self.edges[current].items():
-                if neighbor not in visited:
+            for neighbor, weight in self.adjacency.get(node, []):
+                if neighbor not in seen:
                     heapq.heappush(queue, (cost + weight, neighbor, path))
-
-        return None, float("inf")
-
-    def a_star(self, start, goal):
-        open_set = [(self.heuristics.get(start, 0), 0, start, [])]
-        visited = set()
-
-        while open_set:
-            est_total, cost_so_far, current, path = heapq.heappop(open_set)
-            if current in visited:
-                continue
-            visited.add(current)
-            path = path + [current]
-
-            if current == goal:
-                return path, cost_so_far
-
-            for neighbor, weight in self.edges[current].items():
-                if neighbor not in visited:
-                    new_cost = cost_so_far + weight
-                    est = new_cost + self.heuristics.get(neighbor, 0)
-                    heapq.heappush(open_set, (est, new_cost, neighbor, path))
-
-        return None, float("inf")
+        return None, float('inf')
