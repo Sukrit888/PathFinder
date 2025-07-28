@@ -92,14 +92,6 @@ pathfinder/
 └── README.md
 ```
 
----
-
-## 📸 Screenshots
-
-> (You can insert Streamlit UI screenshots here if desired.)
-
----
-
 ## 🌍 Use Cases
 
 - Smart City Navigation
