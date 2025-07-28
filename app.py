@@ -1,103 +1,67 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import networkx as nx
-import json
-from io import StringIO
 from my_pathfinder import Graph
 
-st.set_page_config(page_title="PathFinder - Smart Navigation", layout="wide")
-st.title("🧭 PathFinder – Smart Navigation using Graph Algorithms")
-
-# Initialize session graph
+# Initialize session state
 if "graph" not in st.session_state:
     st.session_state.graph = Graph()
 
-# Reset Graph Button
-if st.button("🗑️ Reset Graph"):
-    st.session_state.graph = Graph()
-    st.success("Graph has been reset!")
+st.title("🔍 PathFinder – Smart Navigation System")
 
-# Sidebar for user input
-st.sidebar.header("📌 Add Nodes & Edges")
+st.sidebar.header("📍 Add Nodes and Edges")
 
-# Add Node
-node = st.sidebar.text_input("Add Node:")
-if st.sidebar.button("Add Node"):
-    if node:
-        st.session_state.graph.add_node(node)
-        st.sidebar.success(f"Node '{node}' added.")
+# Add Nodes
+node1 = st.sidebar.text_input("Node 1 (From):", key="node1")
+node2 = st.sidebar.text_input("Node 2 (To):", key="node2")
+weight = st.sidebar.number_input("Distance (weight):", min_value=1, value=1, step=1)
+
+if st.sidebar.button("➕ Add Edge"):
+    if node1 and node2:
+        st.session_state.graph.add_edge(node1.strip(), node2.strip(), weight)
+        st.success(f"Edge added: {node1} ➡️ {node2} ({weight})")
     else:
-        st.sidebar.warning("Please enter a valid node name.")
+        st.warning("Both nodes must be provided!")
 
-# Add Edge
-n1 = st.sidebar.text_input("From Node")
-n2 = st.sidebar.text_input("To Node")
-weight = st.sidebar.number_input("Distance", min_value=0.0, format="%.2f")
+# Show Graph Data
+with st.expander("📊 View Graph Data"):
+    st.write("**Nodes:**", st.session_state.graph.get_nodes())
+    st.write("**Edges:**", st.session_state.graph.get_edges())
 
-if st.sidebar.button("Add Edge"):
-    if n1 and n2 and n1 != n2:
-        st.session_state.graph.add_edge(n1, n2, weight)
-        st.sidebar.success(f"Edge added: {n1} ↔ {n2} (Weight: {weight})")
-    else:
-        st.sidebar.warning("Please provide valid distinct node names.")
+# Shortest Path Section
+st.header("🚦 Find Shortest Path")
 
-# Select source and destination
-nodes = list(st.session_state.graph.get_nodes())
+nodes = st.session_state.graph.get_nodes()
 if nodes:
-    node1 = st.selectbox("Select Source", nodes, key="from_node")
-    node2 = st.selectbox("Select Destination", nodes, key="to_node")
+    from_node = st.selectbox("From", nodes, key="from_node_select")
+    to_node = st.selectbox("To", nodes, key="to_node_select")
 
-    if st.button("🔍 Find Shortest Path"):
-        if node1 and node2:
-            path, cost = st.session_state.graph.shortest_path(node1, node2)
+    if st.button("🔍 Find Path"):
+        if from_node != to_node:
+            path, cost = st.session_state.graph.dijkstra(from_node, to_node)
             if path:
                 st.success(f"✅ Path found: {' ➡️ '.join(path)} (Total Distance: {cost})")
             else:
-                st.warning("⚠️ No path found between the selected nodes.")
+                st.error("❌ No path found between the selected nodes.")
+        else:
+            st.warning("Please choose two different nodes.")
+else:
+    st.info("Add some nodes and edges to get started.")
 
 # Draw Graph
+st.header("📈 Network Graph")
+
 G = nx.Graph()
+
 for node in st.session_state.graph.get_nodes():
     G.add_node(node)
-for node in st.session_state.graph.adjacency:
-    for neighbor, weight in st.session_state.graph.adjacency[node]:
-        G.add_edge(node, neighbor, weight=weight)
+
+for n1, n2, weight in st.session_state.graph.get_edges():
+    G.add_edge(n1, n2, weight=weight)
 
 pos = nx.spring_layout(G)
 plt.figure(figsize=(10, 6))
-nx.draw(G, pos, with_labels=True, node_color='skyblue', edge_color='gray', node_size=2000, font_size=16)
+nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=2000, font_size=16)
 labels = nx.get_edge_attributes(G, 'weight')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 st.pyplot(plt)
-
-# Save or Load Graph
-st.header("💾 Save or Load Graph")
-
-# Export
-if st.button("📥 Export Graph as JSON"):
-    graph_data = {
-        "nodes": list(st.session_state.graph.get_nodes()),
-        "edges": [
-            {"from": n1, "to": n2, "weight": w}
-            for n1, neighbors in st.session_state.graph.adjacency.items()
-            for n2, w in neighbors
-        ]
-    }
-    json_str = json.dumps(graph_data, indent=2)
-    st.download_button("Download JSON", json_str, file_name="graph.json", mime="application/json")
-
-# Import
-uploaded_file = st.file_uploader("Upload a graph JSON", type="json")
-if uploaded_file:
-    content = uploaded_file.read().decode("utf-8")
-    try:
-        data = json.loads(content)
-        new_graph = Graph()
-        for node in data.get("nodes", []):
-            new_graph.add_node(node)
-        for edge in data.get("edges", []):
-            new_graph.add_edge(edge["from"], edge["to"], edge["weight"])
-        st.session_state.graph = new_graph
-        st.success("Graph loaded successfully from file.")
-    except Exception as e:
-        st.error(f"Failed to load graph: {e}")
