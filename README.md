@@ -1,73 +1,126 @@
 # 🧭 PathFinder – Smart Navigation System using Graph Algorithms
 
-PathFinder is a Python-based navigation system that finds the shortest path between nodes using **Dijkstra's Algorithm** and **A* Search Algorithm**. It is built with a strong foundation in Data Structures and Algorithms (DSA), ideal for practicing graph theory concepts.
+PathFinder is a Python-based smart navigation tool built with classical graph algorithms like Dijkstra and A* (A-Star), designed for interactive shortest path finding, education, and practical route optimization.
 
 ---
 
 ## 🚀 Features
 
-- Add nodes and weighted edges to build custom graphs.
-- Add (x, y) coordinates for each node to enable A* heuristics.
-- Use **Dijkstra's Algorithm** for shortest path with edge weights.
-- Use **A\*** for optimal navigation with heuristics (Euclidean distance).
-- Clean and modular Python code.
-- Unit tests using Python’s `unittest` module.
+- **Graph Class Implementation** (OOP in Python)
+- **Support for Dijkstra and A\*** Algorithms
+- **Heuristic-based A\* using Euclidean Distance**
+- **Interactive UI with Streamlit**
+- **Graph Visualization** with NetworkX and Matplotlib
+- **Unit Testing** using `unittest`
 
 ---
 
-## 📁 File Structure
+## 🧱 Project Structure
 
-PathFinder/
-├── my_pathfinder.py # Main Graph class with Dijkstra & A* implementation
-├── test_pathfinder.py # Unit tests for the graph algorithms
-└── README.md # Project documentation
-
-
----
-
-## 🧠 Algorithms Used
-
-### Dijkstra’s Algorithm
-Finds the shortest path based only on edge weights.
-
-### A* Search
-Finds the shortest path using:
-- `g(n)` = cost so far from start to node `n`
-- `h(n)` = heuristic estimate to goal (Euclidean)
+```
+pathfinder/
+├── my_pathfinder.py       # Core Graph class and algorithms
+├── test_pathfinder.py     # Unit tests for Dijkstra and A*
+├── app.py                 # Streamlit dashboard for user interaction
+└── README.md              # Project documentation
+```
 
 ---
 
-## 🧪 How to Run
+## 📦 Setup Instructions
 
-### 1. Clone the Repository
+1. **Clone the repository**:
 ```bash
 git clone https://github.com/yourusername/pathfinder.git
 cd pathfinder
 ```
 
-### 2. Run Unit Tests
-``` bash
-python test_pathfinder.py
+2. **Install dependencies**:
+```bash
+pip install -r requirements.txt
 ```
-### 3. 🧰 Dependencies
-No external packages required! Only Python standard libraries:
 
-heapq
+If `requirements.txt` is missing, install manually:
+```bash
+pip install streamlit networkx matplotlib
+```
 
-math
+3. **Run unit tests**:
+```bash
+python -m unittest test_pathfinder.py
+```
 
-unittest
+4. **Launch the Streamlit App**:
+```bash
+streamlit run app.py
+```
 
-### 4. Topics Covered
+---
 
-Graphs (adjacency list)
+## 🎯 Streamlit Dashboard Features
 
-Priority queues
+- Add nodes with (x, y) coordinates
+- Add weighted edges between nodes
+- Visualize the graph interactively
+- Select start and end nodes
+- Choose between Dijkstra and A* for pathfinding
+- Displays shortest path and total cost
 
-Greedy algorithms
+![Screenshot](screenshot.png) <!-- Optional: Add a screenshot -->
 
-Shortest path finding
+---
 
-Heuristics (A* search)
+## 🧪 Testing
 
-Python unittest framework
+Tests are implemented using `unittest`. Run:
+```bash
+python -m unittest test_pathfinder.py
+```
+
+---
+
+## 🛠️ Algorithms
+
+### ✅ Dijkstra's Algorithm
+- Computes shortest paths using greedy strategy.
+- Suitable for graphs with non-negative weights.
+
+### 🌟 A* Search Algorithm
+- Uses **g(n) + h(n)** where `g(n)` is actual cost, and `h(n)` is Euclidean heuristic.
+- More efficient for pathfinding in physical spaces.
+
+---
+
+## 🔮 Future Enhancements
+- Save/load graphs (JSON or Pickle)
+- Support edge editing and deletion
+- Visualize algorithm steps with animation
+- Deploy app on Streamlit Cloud
+
+---
+
+## 🤝 Contributing
+
+1. Fork this repo
+2. Create a new branch
+3. Commit your changes
+4. Push to your fork
+5. Create a Pull Request
+
+---
+
+## 🧑‍💻 Author
+
+**Sukrit Kashyap Goswami**
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🌐 Connect
+
+[LinkedIn](https://www.linkedin.com/in/sukritkashyapgoswami/) | [Medium](https://medium.com/@6sukritgoswami)
